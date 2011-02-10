@@ -2446,6 +2446,25 @@ private:
         }
 
         {
+            const char filedata[] = "#define A (1)\n"
+                                    "#if A==1\n"
+                                    "A\n"
+                                    "#endif\n";
+
+            // Preprocess => actual result..
+            std::istringstream istr(filedata);
+            std::map<std::string, std::string> actual;
+            Settings settings;
+            Preprocessor preprocessor(&settings, this);
+            preprocessor.preprocess(istr, actual, "file.c");
+
+            // Compare results..
+            TODO_ASSERT_EQUALS("\n\n1\n\n",
+                               "\n\n\n\n", actual[""]);
+            ASSERT_EQUALS(1, (int)actual.size());
+        }
+
+        {
             const char filedata[] = "#define A 1\n"
                                     "#ifdef A>0\n"
                                     "A\n"
