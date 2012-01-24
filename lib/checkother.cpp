@@ -1673,6 +1673,22 @@ void CheckOther::unreachableCodeError(const Token *tok)
 }
 
 //---------------------------------------------------------------------------
+// Check for missing else
+//---------------------------------------------------------------------------
+void CheckOther::checkMissingElse()
+{
+    for (const Token *tok = _tokenizer->tokens(); tok != NULL; tok = tok->next()) {
+        if (Token::Match(tok, "if")) {
+            // bounce through the tokens "if ( ) { } else?"
+            const Token *tok2 = tok->next()->link()->next()->link()->next();
+            if (!Token::Match(tok2, "else")) {
+                reportError(tok, Severity::style, "missingElse", "missing else");
+            }
+        }
+    }
+}
+
+//---------------------------------------------------------------------------
 // Check for unsigned divisions
 //---------------------------------------------------------------------------
 static bool isUnsigned(const Variable* var)

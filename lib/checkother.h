@@ -68,6 +68,7 @@ public:
         checkOther.checkUnreachableCode();
         checkOther.checkSuspiciousSemicolon();
         checkOther.checkWrongPrintfScanfArguments();
+        checkOther.checkMissingElse();
 
         // information checks
         checkOther.checkVariableScope();
@@ -246,6 +247,9 @@ public:
 
     /** @brief %Check for code that gets never executed, such as duplicate break statements */
     void checkUnreachableCode();
+
+    /** @brief %Check for 'if' without a corresponding 'else' */
+    void checkMissingElse();
 
     /** @brief assigning bool to pointer */
     void checkAssignBoolToPointer();

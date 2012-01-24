@@ -81,6 +81,7 @@ private:
         TEST_CASE(switchRedundantAssignmentTest);
         TEST_CASE(switchFallThroughCase);
         TEST_CASE(unreachableCode);
+        TEST_CASE(missingElse);
 
         TEST_CASE(coutCerrMisusage);
 
@@ -1952,6 +1953,34 @@ private:
         ASSERT_EQUALS("", errout.str()); // #3457
 
         check("%: return ; ()"); // Don't crash. #3441.
+    }
+
+
+    void missingElse() {
+        check("int foo() {\n"
+              "    if (cond) {\n"
+              "    }\n"
+              "}\n");
+        ASSERT_EQUALS("[test.cpp:2]: (style) missing else\n", errout.str());
+
+        check("int foo() {\n"
+              "    if (cond) bar();\n"
+              "}\n");
+        ASSERT_EQUALS("[test.cpp:2]: (style) missing else\n", errout.str());
+
+        check("int foo() {\n"
+              "    if (cond) {\n"
+              "        bar();\n"
+              "    } else {\n"
+              "    }\n"
+              "}\n");
+        ASSERT_EQUALS("", errout.str());
+
+        check("int foo() {\n"
+              "    if (cond) bar();\n"
+              "    else baz();\n"
+              "}\n");
+        ASSERT_EQUALS("", errout.str());
     }
 
 
